@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 require('dotenv').config();
 
-mongoose.connect(process.env.MONGO_URL).then(() => console.log('database connected successfully...')).catch(err => console.log(err));
+mongoose.connect(process.env.MONGO_URL,{useNewUrlParser: true }).then(() => console.log('database connected successfully...')).catch(err => console.log(err));
 
 const personSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -74,8 +74,10 @@ const findEditThenSave = (personId, done) => {
 
 const findAndUpdate = (personName, done) => {
   const ageToSet = 20;
-
-  done(null /*, data*/);
+  Person.findOneAndUpdate({name:personName},{age:ageToSet}, function(err, result){
+    if(err) return console.log(err);
+    done(null, result);
+  },{new:true});
 };
 
 const removeById = (personId, done) => {
