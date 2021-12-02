@@ -1,10 +1,28 @@
+var mongoose = require('mongoose');
 require('dotenv').config();
 
+mongoose.connect(process.env.MONGO_URL).then(() => console.log('database connected successfully...')).catch(err => console.log(err));
 
-let Person;
+const personSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  age: Number,
+  favoriteFoods: [String]
+})
+
+const Person = mongoose.model('Person', personSchema);
+
 
 const createAndSavePerson = (done) => {
-  done(null /*, data*/);
+  const newPerson = new Person({
+    name:'Oluwadamilola',
+    age:24,
+    favouriteFoods:'rice and beans'
+  })
+ newPerson.save(function(err, data){
+   if (err) return console.error(err);
+
+   done(null, data);
+ })
 };
 
 const createManyPeople = (arrayOfPeople, done) => {
